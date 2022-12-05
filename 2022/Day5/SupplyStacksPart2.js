@@ -12,12 +12,15 @@ var columns = [];
 var instructions = false;
 
 for(var i = 0 ; i < inputArray.length; i++){
+    // matches row of numbers below the stack (not needed)
     if(inputArray[i].replaceAll(' ','').match(/^[0-9]+$/)){
+        // at this point reverse the columns and remove any '0' items denoting empty space
         for(var j = 0; j < columns.length; j++){
             columns[j] = columns[j].reverse();
             columns[j] = columns[j].filter(function(a){return a !== '0'});
         }
 
+        // output parsed input for checking
         for(var j = 0; j < columns.length;j++){
             console.log(columns[j].toString());
         }
@@ -25,29 +28,34 @@ for(var i = 0 ; i < inputArray.length; i++){
         
         continue;
     }
+    // matches empty row between the stack and the instructions
     if(inputArray[i] == ""){
         instructions = true;
         continue;
     }
     if(instructions){
-        
+        // begin parsing instructions
         var howMany = parseInt(inputArray[i].split(' ')[1]);
         var fromWhere = parseInt(inputArray[i].split(' ')[3])-1;
         var toWhere = parseInt(inputArray[i].split(' ')[5])-1;
-        //console.log(howMany + " " + (fromWhere +1) + " " + (toWhere+1));
 
+        // pop elements from column and push into array
         var elements = [];
         for(var j = 0 ; j < howMany; j++){
             elements.push(columns[fromWhere].pop());
         }
+        // reverse the array to keep ordering
         elements = elements.reverse();
 
+        // add the elements to destination column
         columns[toWhere].splice(columns[toWhere].length,0, ...elements);
 
 
     }else{
+        // remove [ ] from row and split into characters
         var row = inputArray[i].replaceAll('[','').replaceAll(']','').split("");
         for(var j = 0; j < row.length; j++){
+            // replaces three consecutive spaces with '0' char denoting empty item and removes following space
             if(j+2 < row.length && row[j] == ' ' && row[j+1] == ' ' && row[j+2] == ' '){
                 row.splice(j,3,'0');
                 if(j+1 < row.length && row[j+1] == ' '){
@@ -55,6 +63,7 @@ for(var i = 0 ; i < inputArray.length; i++){
                 }
                 continue;
             }
+            // removes preceding space
             if(j-1 >= 0 && (row[j-1].match(/[a-z0-9]/i) == row[j-1] || row[j-1] == '0') && row[j] == ' '){
                 row.splice(j, 1);
                 j--;
@@ -64,6 +73,7 @@ for(var i = 0 ; i < inputArray.length; i++){
         }
 
         for(var j = 0; j < row.length;j++){
+            // maps rows into columns
             if(typeof(columns[j]) == 'undefined'){
                 columns.push([row[j]]);
             }else{
@@ -75,3 +85,11 @@ for(var i = 0 ; i < inputArray.length; i++){
 for(var i = 0; i < columns.length;i++){
     console.log(columns[i].toString());
 }
+console.log("\n");
+
+var solution = "";
+for(var i = 0 ; i < columns.length; i++){
+    solution += columns[i][columns[i].length -1];
+}
+
+console.log("SOLUTION: " + solution);
