@@ -106,9 +106,13 @@ class Tree {
         return undefined;
     }
     outputDirs(node = this.root) {
-        if (node.type == "dir" && node.size <= 100000) {
+        /*if (node.type == "dir" && node.size <= 100000) {
             totalSize += node.size;
             console.log(node.key + " " + node.size);
+        }*/
+
+        if(node.type == "dir"){
+            directories.push({key: node.key, size: node.size});
         }
 
         if (node.children.length) {
@@ -165,6 +169,7 @@ if (test) {
     inputArray = fs.readFileSync("2022/Day7/input/puzzle.txt").toString().split(/\r?\n/);
 }
 
+var directories = [];
 
 var tree = new Tree("/", "/", "dir", 0);
 var currentDir = tree.root;
@@ -219,5 +224,19 @@ for (var i = 0; i < inputArray.length; i++) {
     }
 }
 
+//tree.outputStructure(tree.root, 0);
 tree.outputDirs();
-console.log(totalSize)
+tree.recalcSizes()
+//console.log(totalSize)
+
+directories.sort((a,b) => { return a.size - b.size});
+
+
+
+for(var i = 0; i < directories.length; i++){
+    console.log(directories[i].key + " " + directories[i].size);
+    if(70000000 - directories[i].size <= 30000000){
+        console.log(directories[i].key);
+        break;
+    }
+}
