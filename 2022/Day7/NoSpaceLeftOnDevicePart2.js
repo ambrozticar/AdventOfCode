@@ -73,7 +73,7 @@ class Tree {
     insert(parentNodeKey, key, value = key, type, size) {
         for (let node of this.preOrderTraversal()) {
             if (type == "file") {
-                if (node.key === parentNodeKey && node.type=="dir") {
+                if (node.key === parentNodeKey && node.type == "dir") {
                     node.children.push(new TreeNode(key, value, node, type, size));
                     return true;
                 }
@@ -111,10 +111,6 @@ class Tree {
             console.log(node.key + " " + node.size);
         }*/
 
-        if(node.type == "dir"){
-            directories.push({key: node.key, size: node.size});
-        }
-
         if (node.children.length) {
             for (let child of node.children) {
                 this.outputDirs(child);
@@ -135,18 +131,24 @@ class Tree {
             }
         }
     }
-    recalcSizes(node = this.root){
+    recalcSizes(node = this.root) {
         var dirSize = 0;
         if (node.children.length) {
             for (let child of node.children) {
-                if(node.type == "file"){
-                    return node.size;
+                if (child.type == "dir") {
+                    dirSize += this.recalcSizes(child);
+                } else {
+                    dirSize += child.size;
                 }
-                dirSize += this.recalcSizes(child);
+
             }
         }
         node.size = dirSize;
+        if (node.type == "dir") {
+            directories.push({ key: node.key, size: node.size });
 
+        }
+        return dirSize;
     }
 }
 
@@ -224,19 +226,19 @@ for (var i = 0; i < inputArray.length; i++) {
     }
 }
 
-//tree.outputStructure(tree.root, 0);
-tree.outputDirs();
-tree.recalcSizes()
-//console.log(totalSize)
 
-directories.sort((a,b) => { return a.size - b.size});
+tree.recalcSizes();
+//tree.outputStructure(tree.root, 0);;
+//console.log(tree.root.size);
+
+directories.sort((a, b) => { return a.size - b.size });
 
 
 
-for(var i = 0; i < directories.length; i++){
-    console.log(directories[i].key + " " + directories[i].size);
-    if(70000000 - directories[i].size <= 30000000){
-        console.log(directories[i].key);
+for (var i = 0; i < directories.length; i++) {
+    //console.log(directories[i].key + " " + directories[i].size);
+    if (70000000 - tree.root.size + directories[i].size >= 30000000) {
+        console.log(directories[i].size);
         break;
     }
 }

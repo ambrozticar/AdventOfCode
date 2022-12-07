@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/2022/Day7/Part1.js"
+            "program": "${workspaceFolder}/2022/Day7/NoSpaceLeftOnDevicePart2.js"
         }
     ]
 }
